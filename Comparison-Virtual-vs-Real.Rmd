@@ -1,0 +1,339 @@
+---
+title: |
+  | Bootstrap methods to compare distributions between virual cohorts and clinical datasets
+author: |
+  Pablo Emilio Verde
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output:
+  pdf_document:
+    toc: yes
+    toc_depth: '5'
+  fontsize: 12pt
+  bookdown::word_document2:
+    fig_caption: yes
+    toc: yes
+    toc_depth: 5
+  bookdown::pdf_document2:
+    fig_caption: yes
+    keep_tex: yes
+    number_sections: yes
+    toc: yes
+    toc_depth: 6
+link-citations: yes
+header-includes:
+- \usepackage{leading}
+- \leading{15pt}
+- \usepackage{lscape}
+- \usepackage{xcolor}
+- \newcommand{\blandscape}{\begin{landscape}}
+- \newcommand{\elandscape}{\end{landscape}}
+- \usepackage{fancyhdr}
+- \usepackage{placeins}
+- \pagestyle{fancy}
+- \renewcommand{\headrulewidth}{0pt}
+- \fancyhead[L]{\today}
+- \fancyhead[C]{Statistical Report}
+- \fancyhead[R]{Pablo E. Verde}
+- \fancyfoot[L]{}
+- \fancyfoot[C]{\thepage}
+- \fancyfoot[R]{}
+- \usepackage[font = small, textfont = it, labelfont = bf]{caption}
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+library(tidyverse)
+library(MASS)
+library(ggstance)
+require(gridExtra)
+
+library(pander)
+library(knitr)
+library(kableExtra)
+library(gtsummary)
+library(bookdown)
+
+library(R2jags)
+
+```
+
+\newpage
+
+
+# Proposed Bootstrap method for univariate measurements
+
+The aim is to compare the probability distributions of two data sets: a real clinical data $y^{r}$ and a 
+virtual cohort data $y^{v}$ produced by an algorithm. 
+
+We propose to generate bootstrap samples, by resampling the virtual data $y^{v}$ and compare
+the distributions generated with the fixed $y^{r}$. The bootstrap comparison has to be 
+performed by fixing the data sets: $n_r = n_v$.
+
+We assume that each observation is univariate and independently distributed
+and we denote these two data sets as:
+\[
+ y_{1}^{r} \ldots, y_{n_r}^{r} \sim P^r
+\]
+and
+\[
+ y_{1}^{v} \ldots, y_{n_v}^{v} \sim P^v.
+\]
+
+In addition, we assume that we do not have directly access to the algorithm that produced $y_r$,
+but only a realization of the virtual cohort. Moreover, the real data $y^{r}$ is a **validation data**
+that has not been used to build the model $P^v$ that simulates $y_r$.
+
+The central difficult is that we are comparing a **directly measured** data $y^{r}$ from patients,
+with an **indirect generated** data $y^{v}$ that aims to mimic $y^{r}$. The main difference between
+the two data sets is the **amount of information** that they contain. 
+
+This feature can be describe by the relationship between the sample sizes $n_r$
+and $n_v$.  For a sample size of real measurement $n_r$ the effective sample size of a virtual cohort is
+$n_v = \alpha \times n_r$, where $\alpha$ is an **uncertainty discount factor**
+between zero and one. Thus, if $\alpha = 0.10$ a virtual observation worth 0.1 of a real one. 
+
+If we handle the virtual data $y^{v}$ as a prediction of the true data $y^{r}$, we expect that
+the prediction will have more variability and we can choose $\alpha$ as
+\[
+ \alpha = \frac{Var(y_r)}{Var(y_v)}. 
+\]
+We use this technique in the example below.
+
+We use this relationship between the sample sizes to generate the bootstrap samples
+from the virtual data $y^{v}$. Thus, the bootstrap samples are sub-samples with
+replacement of size $m = [\alpha \times n_r]$. For example, $n_r = 100$ and we
+choose $\alpha = 0.70$, the sample size of the bootstrap sample is $m = 70$.
+
+\newpage
+
+# Real and synthetic data examples
+
+## Real shapes data
+
+```{r}
+library(readxl)
+shapeFeatures_real <- read_excel("shapeFeatures_real.xlsx")
+
+```
+
+```{r}
+library(readxl)
+shapeFeatures_virtual <- read_excel("shapeFeatures_synthetic.xlsx")
+
+```
+
+
+We choose the variable $D_lvot$ as an example. We must take the same length
+between real and virtual data sets! We take
+\[
+n_r = n_v = 90.
+\]
+
+
+```{r}
+y.virtual = shapeFeatures_virtual$D_lvot[1:90]
+y.real    = shapeFeatures_real$D_lvot[1:90]
+```
+
+
+## Bootstrap comparison of the density function 
+
+
+```{r}
+plot(density(y.virtual), lwd = 2, col = "blue", ylim = c(0, 0.2), 
+     xlab = "Variable: D_lvot",
+     main = "Comparison: Real vs. Virtual Cohort")
+lines(density(y.real), lwd = 2, col = "red")
+legend(30,0.15, legend=c("Real", "Virtual"), col=c("red", "blue"), lwd=c(3,3))
+
+
+```
+
+
+The sample size is:
+
+```{r}
+n = length(y.virtual)
+n
+```
+
+
+We choose $\alpha$ as the ratio of the variances:
+
+```{r}
+alpha = var(y.real)/var(y.virtual)
+alpha
+```
+
+and the size of the bootstrap samples as:
+
+```{r}
+m = round(n*alpha,0)
+m
+```
+
+
+
+We choose the number of bootstrap samples $B$ as:
+
+```{r}
+B = 2000
+```
+
+We perform the bootstrap samples 
+
+```{r}
+set.seed(1509)
+boot.mat.x = rep(0, 512*B)
+dim(boot.mat.x) = c(B, 512)
+  
+boot.mat.y = rep(0, 512*B)
+dim(boot.mat.y) = c(B, 512)
+ 
+
+for(b in 1:B)
+{
+  y.star = sample(y.virtual, size = m, replace = TRUE)
+  boot.mat.x[b, ] = density(y.star)$x
+  boot.mat.y[b, ] = density(y.star)$y
+}
+```
+
+
+Here we plot the real and the virtual data with 50 bootstrap samples 
+from the virtual data:
+
+```{r}
+plot(density(y.virtual), lwd = 2, col = "blue", ylim = c(0, 0.2), 
+     xlab = "Variable: D_lvot",
+     main = "Comparison: Real vs. Virtual Cohort")
+lines(density(y.real), lwd = 2, col = "red")
+legend(30,0.15, legend=c("Real", "Virtual", "Bootstrap"), 
+       col=c("red", "blue", "grey"), lwd=c(3,3))
+
+
+for(b in 1:5)
+{
+  y.star = sample(y.virtual, size = n, replace = TRUE)
+  lines(density(y.star), col="grey", lty = 3)
+}
+
+```
+
+Here we calculate the 95% confidence bounds for the density function
+of the virtual data: 
+
+```{r}
+plot(density(y.virtual), lwd = 2, col = "blue", ylim = c(0, 0.2), 
+     xlab = "Variable: D_lvot",
+     main = "Comparison: Real vs. Virtual Cohort")
+lines(density(y.real), lwd = 2, col = "red")
+
+x.boot = apply(boot.mat.x, 2, mean)
+
+y.boot.95 = apply(boot.mat.y, 2, quantile, 0.975)
+points(x.boot, y.boot.95, type = "l", lty = 2, lwd = 2)
+
+y.boot.05 = apply(boot.mat.y, 2, quantile, 0.025)
+points(x.boot, y.boot.05, type = "l",lty = 2, lwd = 2)
+
+legend(28,0.18, legend=c("Real", "Virtual", "Bootstrap 95%"), 
+       col=c("red", "blue", "black"), lwd=c(3,3,2), lty = c(1,1,2))
+
+
+```
+
+A bootstrap $p-value$ can be calculated from the number of times that
+the density of the real data is out off the 95% confidence bounds.
+
+This statistical test can be calculated as follows:
+
+
+```{r}
+
+n.upper = sum(density(y.real)$y> y.boot.95)
+
+n.lower = sum(density(y.real)$y< y.boot.05)
+
+n.upper
+
+n.lower
+
+x.length = length(x.boot)
+
+```
+
+The bootstrap $p-value$ is:
+
+```{r}
+
+# P-value
+0.5*n.upper/x.length + 0.5*n.lower/ x.length
+
+```
+
+This p-value is less than 0.05, so the virtual cohort does not mimic the
+true data set.
+
+
+# Features comparison virtual vs real 
+
+**Under construction**
+
+
+We can use the bootstrap samples to compare specific features of the data.
+For example, we can compare if the minimum or the maximum values
+of the virtual cohort mimics the corresponding values in the real data. 
+
+
+```{r}
+# Features: Min, Max
+
+min.real = min(y.real)
+max.real = max(y.real)
+
+min.star = rep(0, B)
+max.star = rep(0, B)
+
+for(b in 1:B)
+{
+  y.star = sample(y.virtual, size = round(n*alpha,0), replace = TRUE)
+  min.star[b] = min(y.star)
+  max.star[b] = max(y.star)
+}
+
+
+# p values
+
+sum(min.star<min.real)/B
+
+sum(max.star>max.real)/B
+
+
+```
+
+
+
+```{r}
+#Comparison plots
+
+par(mfrow = c(1,2))
+
+# min
+hist(min.star, col = "blue", breaks = 50 )
+abline(v = min.real, lty = 2, lwd = 4)
+
+# max
+hist(max.star, col = "red", breaks = 50 )
+abline(v = max.real, lty = 2, lwd = 4)
+
+par(mfrow = c(1,1))
+```
+
+# Multivariate comparisons
+
+**Under construction**
+
