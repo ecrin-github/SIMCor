@@ -9,7 +9,6 @@ This work aims to assess the potential impact of the use of virtual cohorts and 
 
 ![image](https://github.com/ecrin-github/SIMCor/assets/131688360/6c36b545-1a49-4228-aaaf-6ce57caf6430)
 
-
 1.	General aspects
 
 Validation and application of virtual cohorts is related to the Context of Use (CuO) and the Question of Interest (QoI). Definitions for these terms are taken from the FDA Guidance on “Assessing the credibility of computational modelling and simulation in medical device submissions”.
