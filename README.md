@@ -1,8 +1,13 @@
+This work aims to assess the potential impact of the use of virtual cohorts and computer simulations on the “real world”, i.e., on the innovation process, the medical devices industry and the healthcare system.
+
 
 ![image](https://github.com/ecrin-github/SIMCor/assets/131688360/1843df53-556f-4523-9b96-13e594e6f0a1)
 
+![image](https://github.com/ecrin-github/SIMCor/assets/131688360/d498ce6e-c322-463c-8f0c-0eb8b852abcd)
 
+![image](https://github.com/ecrin-github/SIMCor/assets/131688360/19f101fe-d1b3-4170-aca1-278766d27f66)
 
+![image](https://github.com/ecrin-github/SIMCor/assets/131688360/6c36b545-1a49-4228-aaaf-6ce57caf6430)
 
 
 1.	General aspects
