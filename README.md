@@ -1,5 +1,81 @@
-This work aims to assess the potential impact of the use of virtual cohorts and computer simulations on the “real world”, i.e., on the innovation process, the medical devices industry and the healthcare system.
+General Information:
 
+· Name: SIMCor (In-Silico testing and validation of Cardiovascular Implantable devices) (to be fixed later)
+
+· Creator: T. Khorchani (ECRIN), P.E. Verde (Heinrich Heine University and University Hospital Düsseldorf), C. Ohmann ((ECRIN)
+
+· Version: v.0.1.0
+
+· Release Date: [Release Date]
+
+· Logo: description of the logo can be added if available
+
+Overview:
+
+SIMCor is an advanced Shiny application designed for statistical analysis, especially in validating and applying virtual cohorts. It is particularly useful in fields requiring rigorous data analysis and visualization, such as biomedical research, statistical modeling, and data science.
+
+User Interface (UI):
+
+· Styling: The UI adopts a design, enhanced with 'Poppins' Google font for improved readability and aesthetic appeal.
+
+· Main Modules:
+
+· Validation of Virtual Cohorts: Enables users to validate virtual cohort data: the process of determining the degree to which a model or a simulation is an accurate representation of the real world.
+
+· Application of Validated Cohorts: Dedicated to applying validated cohort data in practical scenarios.
+
+· Analysis: Provides comprehensive analysis tools, including univariate, bivariate, and multivariate comparisons, along with variability assessments.This work aims to assess the potential impact of the use of virtual cohorts and computer simulations on the “real world”, i.e., on the innovation process, the medical devices industry and the healthcare system.
+Validation of virtual cohorts is related to the Context of Use (CuO) and the Question of Interest (QoI). Definitions for these terms are taken from the FDA Guidance on “Assessing the credibility of computational modelling and simulation in medical device submissions”.
+
+COU: “a statement that defines the specific role and scope of the computational model used to address the question of interest”
+
+QoI: “the specific question, decision, or concern that is being addressed”
+
+CoU and QoI belong to the metadata of a virtual cohort and should be stored with other metadata in the VRE. So, the CoU and the QoL are already predefined when importing the virtual cohort dataset into R-statistical environment. CoU and QoI are essential elements for the scope and role of the computational model and the specific question addressed. This information is recorded as text and linked to the metadata of the virtual cohort. If no information is documented for CoU and QoI, this will be marked as “missing” in the R-statistical environment. The analytical techniques to validate and apply specific virtual cohorts are not directly linked to the CoU and the QoI but this information is included at the beginning of the statistical report to allow proper interpretation of the statistical results.
+
+Functionalities:
+
+· Data Import and Validation: Users can upload and validate both virtual and real datasets in CSV format.
+
+· Data Analysis Tools: Includes tools for statistical analysis such as summary statistics, boxplots, heatmaps, and scatter plots.
+
+· Interactive Visualizations: Leveraging ggplot2 and plotly for dynamic and informative visualizations.
+
+· Report Generation: Capability to download various analytical reports in PDF format.
+
+· Bootstrap Analysis: For advanced variability assessments and comparisons.
+
+Usage:
+
+· Intended Audience: Researchers, data analysts, and academicians in fields requiring data validation and analysis.
+
+· Application Flow: Users start by uploading datasets, followed by choosing specific modules for data analysis and visualization.
+
+· Output: Visual representations of data analysis, downloadable reports, and insights into the datasets.
+
+References:
+
+· Include references to different statistical methods, algorithms, or publications used within the application. For example:
+
+· Verstraeten S, Hoeijmakers M, Tonino P, et al. Generation of synthetic aortic valvestenosis geometries for in silico trials.Int J Numer Meth Biomed Engng. 2023;e3778. doi:10.1002/cnm.3778VERSTRAETENET AL.21 of 21.
+
+· Johnson R. A. and Wichern, D.W. (1992). Applied Multivariate Statistical Analysis. Prentice-Hall International Editions.
+
+· Efron, B. & Tibshirani, R. (1993). An Introduction to the Bootstrap. Chapman & Hall.
+
+· Tarek Haddad, Adam Himes, Laura Thompson, Telba Irony, Rajesh Nair & on Behalf of MDIC Computer Modeling and Simulation Working Group Participants (2017). Incorporation of stochastic engineering models as prior information in Bayesian medical device trials, Journal of Biopharmaceutical Statistics, 27:6, 1089-1103, DOI: 10.1080/10543406.2017.1300907.
+
+Contact and Support:
+
+· Here we could provide contact information for user support, feedback, and further inquiries.
+
+Additional Notes:
+
+· The application is user-friendly across different devices and screen sizes.
+
+Conclusion:
+
+SIMCor is built with the aim of providing a robust and user-friendly platform for data analysis and visualization. As we continue to improve and update the application, we welcome feedback and suggestions from our user community.
 
 ![image](https://github.com/ecrin-github/SIMCor/assets/131688360/1843df53-556f-4523-9b96-13e594e6f0a1)
 
