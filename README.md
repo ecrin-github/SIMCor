@@ -1,3 +1,36 @@
+Get Started with SIMCor Shiny App
+
+Prerequisites
+Before you begin, ensure you have met the following requirements:
+
+R and RStudio: You need to have R and RStudio installed on your computer. If you haven’t installed them yet, you can download R here and RStudio here.
+Shiny Package: This app is built using the Shiny framework for R. Install Shiny in RStudio by running install.packages("shiny").
+
+Installation
+To run the SIMCor Shiny app locally, follow these steps:
+
+Clone the repository: Clone this GitHub repository to your local machine or download it as a ZIP file and extract it.
+Open the project: Open the RStudio project file (if provided) or simply open the app.R file in RStudio.
+Install Dependencies: Run the following command in RStudio to install all the required packages:
+install.packages(c("shiny", "readxl", "data.table", "ggplot2", "plotly", "reshape2", "corrplot", "GGally", "boot", "dplyr", "shinydashboard"))
+Load the app: In RStudio, open the server.R and ui.R files (or the app.R file if the application is contained in a single file).
+
+Running the App
+To start the app, click on the 'Run App' button in RStudio's top right corner of the script editor, or run shiny::runApp() in the console.
+
+Data Requirements
+This app requires specific datasets to function correctly:
+Virtual and Real Datasets: The app analyzes and compares virtual and real datasets. Ensure your datasets are in CSV format.
+Dataset Structure: The datasets should have a specific structure. Include a sample or template CSV file for reference, if possible.
+
+Using the App
+Navigation: The app has multiple modules for validation, analysis, and comparison of virtual and real datasets. Navigate through these modules using the tabs and buttons provided.
+Uploading Data: Use the file upload inputs to load your datasets into the app.
+Interactive Analysis: Once your data is uploaded, you can interact with various plots and statistical tools to analyze and compare the datasets.
+
+
+
+
 General Information:
 
 · Name: SIMCor (In-Silico testing and validation of Cardiovascular Implantable devices) (to be fixed later)
@@ -6,9 +39,8 @@ General Information:
 
 · Version: v.0.1.0
 
-· Release Date: [Release Date]
+· Release Date: [2023]
 
-· Logo: description of the logo can be added if available
 
 Overview:
 
@@ -53,6 +85,8 @@ Usage:
 
 · Output: Visual representations of data analysis, downloadable reports, and insights into the datasets.
 
+
+
 References:
 
 · Include references to different statistical methods, algorithms, or publications used within the application. For example:
@@ -67,7 +101,7 @@ References:
 
 Contact and Support:
 
-· Here we could provide contact information for user support, feedback, and further inquiries.
+· For user support, feedback, and further inquiries, please contact: takoua.khorchani@ecrin.org
 
 Additional Notes:
 
