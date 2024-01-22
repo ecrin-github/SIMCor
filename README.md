@@ -26,6 +26,9 @@ Dataset Structure: The datasets should have a specific structure. Include a samp
 Using the App
 Navigation: The app has multiple modules for validation, analysis, and comparison of virtual and real datasets. Navigate through these modules using the tabs and buttons provided.
 Uploading Data: Use the file upload inputs to load your datasets into the app.
+      Reference: In a study by Verstraeten et al. (2023), a virtual cohort generator was developed, generating anatomically plausible, synthetic aortic valve stenosis geometries for in silico TAVI trials ((https://pubmed.ncbi.nlm.nih.gov/37961993/).  To build the generator, a combination of non-parametrical statistical shape modelling and sampling from a copula distribution was used. The developed virtual cohort generator successfully generated 500 synthetic aortic valve stenosis geometries that were compared with a real cohort of 97 patients, resulting in validation of the virtual cohort. The dataset underlying the example is openly available at 4TU.ResearchData under the link https://data.4tu.nl/datasets/3f6a3788-96e6-4b81-b37b-f07eeec85965.
+
+      
 Interactive Analysis: Once your data is uploaded, you can interact with various plots and statistical tools to analyze and compare the datasets.
 
 
