@@ -2,7 +2,6 @@ Get Started with SIMCor Shiny App
 
 Prerequisites
 Before you begin, ensure you have met the following requirements:
-
 R and RStudio: You need to have R and RStudio installed on your computer. If you haven’t installed them yet, you can download R here and RStudio here.
 Shiny Package: This app is built using the Shiny framework for R. Install Shiny in RStudio by running install.packages("shiny").
 
