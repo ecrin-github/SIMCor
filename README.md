@@ -103,7 +103,7 @@ References:
 
 Contact and Support:
 
-· For user support, feedback, and further inquiries, please contact: takoua.khorchani@ecrin.org
+· For user support, feedback, and further inquiries, please contact: takoua.khorchani@ecrin.org - takouakhorchani@gmail.com
 
 Additional Notes:
 
