@@ -1,0 +1,120 @@
+library(shiny)
+library(dplyr)
+library(plotly)
+
+# Define the user interface
+ui <- fluidPage(
+  titlePanel("Data Analysis Tool"),
+  sidebarLayout(
+    sidebarPanel(
+      fileInput("fileInput1", "Choose First CSV File (Pre Simulation)",
+                accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv")),
+      fileInput("fileInput2", "Choose Second CSV File (Post Simulation)",
+                accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv")),
+      selectInput("varSelect", "Select Variable", choices = NULL)
+    ),
+    mainPanel(
+      h4("Statistics - Pre Simulation"),
+      tableOutput("statsTable1"), # Display stats for the first dataset
+      h4("Statistics - Post Simulation"),
+      tableOutput("statsTable2"),  # Display stats for the second dataset
+      h4("Comparative Analysis"),
+      verbatimTextOutput("testOutput"), # Display the result of the Wilcoxon test
+      h4("Box Plots"),
+      plotlyOutput("boxPlot")  # Display box plots for comparative analysis
+    )
+  )
+)
+
+# Define server logic
+server <- function(input, output, session) {
+  
+  # Reactive value for storing the first dataset
+  dataset1 <- reactive({
+    req(input$fileInput1)
+    inFile1 <- input$fileInput1
+    read.csv(inFile1$datapath)
+  })
+  
+  # Reactive value for storing the second dataset
+  dataset2 <- reactive({
+    req(input$fileInput2)
+    inFile2 <- input$fileInput2
+    read.csv(inFile2$datapath)
+  })
+  
+  # Update variable selection input based on the first dataset (assumption: both datasets have the same structure)
+  observe({
+    df1 <- dataset1()
+    updateSelectInput(session, "varSelect", choices = names(df1))
+  })
+  
+  # Function to calculate stats
+  calculateStats <- function(data) {
+    req(data)
+    if(is.numeric(data)) {
+      stats <- tibble(
+        Mean = round(mean(data, na.rm = TRUE), 2),
+        Median = round(median(data, na.rm = TRUE), 2),
+        SD = round(sd(data, na.rm = TRUE), 2),
+        IQR = round(IQR(data, na.rm = TRUE), 2)
+      )
+    } else {
+      return(tibble(Message = "Please select a numeric variable."))
+    }
+    return(stats)
+  }
+  
+  # Render stats table for the first dataset
+  output$statsTable1 <- renderTable({
+    req(input$varSelect)
+    data1 <- dataset1()[[input$varSelect]]
+    calculateStats(data1)
+  })
+  
+  # Render stats table for the second dataset
+  output$statsTable2 <- renderTable({
+    req(input$varSelect)
+    data2 <- dataset2()[[input$varSelect]]
+    calculateStats(data2)
+  })
+  
+  # Perform the paired t-test and display the results
+  output$testOutput <- renderPrint({
+    req(input$varSelect)
+    pre_data <- dataset1()[[input$varSelect]]
+    post_data <- dataset2()[[input$varSelect]]
+    
+    if (is.numeric(pre_data) && is.numeric(post_data)) {
+      test_result <- t.test(pre_data, post_data, paired = TRUE, var.equal = FALSE)
+      cat("t-test results:\n")
+      cat(sprintf("t = %.4f, df = %.2f, p-value = %.4f\n", 
+                  test_result$statistic, 
+                  test_result$parameter, 
+                  test_result$p.value))
+    } else {
+      cat("Both datasets must contain numeric data for the selected variable.")
+    }
+  })
+  
+  # Render Plotly box plot
+  output$boxPlot <- renderPlotly({
+    req(input$varSelect)
+    pre_data <- dataset1()[[input$varSelect]]
+    post_data <- dataset2()[[input$varSelect]]
+    
+    data_to_plot <- data.frame(
+      Value = c(pre_data, post_data),
+      Category = rep(c("Pre", "Post"), each = length(pre_data))
+    )
+    
+    plot_ly(data_to_plot, x = ~Category, y = ~Value, type = 'box',
+            color = ~Category, colors = c("#FF6347", "#4682B4")) %>%
+      layout(title = "Box Plot Comparison", xaxis = list(title = "Simulation Stage"), 
+             yaxis = list(title = "Value"))
+  })
+  
+}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
