@@ -191,42 +191,26 @@ The following analytical techniques are applied in the R-statistical environment
 
 3.1	One-group assessment
 
-Here only one validated virtual cohort is analysed with respect to univariate descriptive statistics. This covers different types of variables, such as prognostic factors, interventions, and outcomes. From the imported virtual cohort all, several or one specific variable are selected, and the following descriptive statistics are calculated and presented:
-•	Mean value, median value, standard deviation, interquartile range, range for quantitative variables
-•	Confidence intervals for individual variables
-•	Frequencies for qualitative variables
-The results are presented as tables with variables as rows and descriptive statistics in columns. In addition, the results are shown as box plots.
-In addition, an assessment of the variability will be performed  by enabling random sub-sampling from the virtual cohort. The results from this assessment are presented separately for each subsample and are summarised in a graphical display.
-Bivariate dependencies between certain variables in the virtual cohort can be analysed with the following methods:
-•	Spearman correlation coefficients between selected features
-•	Relative risk (for certain outcomes)
-Optionally, if resources are available, this will be completed by the possibility to perform multivariate analysis for prediction of outcome variables.
-Here the "generalized linear model" glm() function R will be used. This function covers, binary outcomes (logistic regression), continues outcomes (multiple linear regression), counting outcomes (Poisson regression) and so on. So, several scenarios are covered with one function. In addition, step-wise variable selection can be implemented (e.g. function stepAIC() in R).
+If “One- and two-group assessment” is selected, first the type of trial needs to be defined by selecting “1-group design” or “2-group design”.
+For the 1-group design (i.e. only one validated cohort and no control), the dataset for the analysis should be imported as, currently, CSV files. For the import, any accessible computer can be browsed, and a specific file selected. Then the variable of interest should be specified by selecting from the list of all variables of the dataset imported. In the next step, the type of variable needs to be specified (discrete, continuous, time to event).
+If “perform analysis” is clicked, then there are 3 options available:
+a)	Data (default)
+b)	Plot
+c)	Analysis
+Under “Data” the individual records belonging to the dataset can be browsed.
+“Plot” provides a figure reporting frequency and a chi-square test for a discrete variable, a boxplot for a continuous variable and a Kaplan-Meier curve for a time-to-event variable. 
+
 
 3.2	Two-group comparison
 
-The major use case for a two-group comparison of validated virtual cohorts is an in-silico trial comparing two medical devices. For the two-group design two validated virtual cohorts with the same structure and variables are needed, only differing by the type of intervention. For the analysis it should be possible to specify interesting outcome variables. The analysis should include the usual descriptive statistics but also different statistical tests for comparing the two groups. 
-With respect to descriptive statistics, the following metrics are foreseen:
-•	Mean value, median value, standard deviation, interquartile range, range for quantitative variables
-•	Confidence intervals for individual variables
-•	Frequencies for qualitative variables
-The results are presented as tables with variables as rows and descriptive statistics in columns. Descriptive statistics is performed, and the results displayed separately per group. In addition, the univariate results are shown as box plots, again separately for both groups.
-
-Furthermore, different statistical tests for comparing the two groups are included:
-•	T-test, Wilcoxon-test for quantitative variables
-•	Chi-square, Fisher-test for qualitative variables
-The application should also provide possibilities to perform: 
-•	Power considerations
-•	Analysis of effect sizes
-Dependent on the available resources, the following options for selection of clinical trial alternatives are considered:
-•	Analysis method (superiority, non-inferiority, equivalence)
-•	Hypothesis (2-tailed, 1-tailed)
-•	Type 1 error
-There are more aspects of clinical trials, which could also be of interest for in-silico clinical trials. These aspects must be discussed more in detail before an implementation in the R-statistical environment can be recommended and considered. These aspects cover:  
-•	Trial design (fixed, adaptive, sequential)
-•	Drop-out rate
-•	Interim analysis/stop criteria
-•	Analysis (intention to treat, per protocol)
+For the 2-group design, the two datasets for the analysis should be imported as, currently, CSV files. For the import, any accessible computer can be browsed, and two datasets should be selected sequentially. The structure of the two datasets should be the same. Again, and like the 1-group design, the variable of interest should be specified by selecting it from the list of all variables of the datasets imported. In the next step the type of variable needs to be specified (discrete, continuous, time-to-event).
+If “perform analysis” is clicked, three options are available:
+a)	Data (default)
+b)	Plot
+c)	Analysis 
+Under “data” (default option), the individual datasets can be browsed. 
+For a discrete variable, “plot” provides a figure reporting frequencies for the two datasets. For a continuous variable, boxplots of the two datasets are presented. For a time-to-event variable, the two Kaplan-Meier curves are shown in one figure.
+The function “analysis” covers a chi-square test for a discrete variable, comparing the two datasets. For a continuous variable, a t-test is presented and for a time-to-event variable a Kaplan-Meier test.
 
 
 
