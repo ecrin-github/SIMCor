@@ -151,8 +151,7 @@ Therefore, the QoI for the validation activities may be different from the gener
 2.1 	Univariate (marginal) distributions of the variables between real and synthetic data
 
 From the imported data sets all, several or one specific variable are selected and separately for the virtual and real datasets descriptive statistics are calculated and presented:
-•	Mean value, median value, standard deviation, interquartile range, range for quantitative variables
-•	Frequencies for qualitative variables
+•	Mean value, standard deviation, Max and Min
 •	Scatter plots of combinations of variables
 The results are presented as tables with variables as rows and virtual and real data metrics as columns. In addition, the results are shown as box plots.
 2.2 	Bivariate correlations between variables of real and synthetic data
