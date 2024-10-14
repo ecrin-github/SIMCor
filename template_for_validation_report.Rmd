@@ -1,0 +1,268 @@
+---
+title: "Report for Validation of Virtual Cohorts"
+params:
+  data: NULL
+
+
+subtitle: |
+          | Draft Version 01
+author: "Author Name"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output:
+  pdf_document:
+    toc: yes
+    toc_depth: '6'
+    number_sections: true
+  bookdown::pdf_document2:
+    fig_caption: yes
+    keep_tex: yes
+    number_sections: yes
+    toc: yes
+    toc_depth: 6
+  html_document:
+    toc: yes
+    toc_depth: '6'
+    df_print: paged
+    number_sections: true
+  bookdown::word_document2:
+    fig_caption: yes
+    toc: yes
+    toc_depth: 5
+    number_sections: true
+    fontsize: 12pt
+  word_document:
+    toc: yes
+    toc_depth: '6'
+link-citations: yes
+header-includes:
+- \usepackage{leading}
+- \leading{15pt}
+- \usepackage{lscape}
+- \usepackage{xcolor}
+- \newcommand{\blandscape}{\begin{landscape}}
+- \newcommand{\elandscape}{\end{landscape}}
+- \usepackage{fancyhdr}
+- \usepackage{placeins}
+- \pagestyle{fancy}
+- \renewcommand{\headrulewidth}{0pt}
+- \fancyhead[L]{\today}
+- \fancyhead[C]{Report for validation of virtual cohorts}
+- \fancyhead[R]{Author}
+- \fancyfoot[L]{}
+- \fancyfoot[C]{\thepage}
+- \fancyfoot[R]{}
+- \usepackage[font = small, textfont = it, labelfont = bf]{caption}
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+library(tidyverse)
+library(ggstance)
+require(gridExtra)
+
+library(pander)
+library(knitr)
+library(kableExtra)
+library(gtsummary)
+library(bookdown)
+library(readr)
+library(dplyr)
+library(ggplot2)
+```
+
+
+\newpage
+
+
+#	Introduction and background of the validation
+
+  	(free text by the user)
+
+#	Objective of the validation
+
+  	(free text by the user)
+
+#	Data and metadata used for validation
+
+    (Name of the data files loaded in R for validation)
+
+## Context of use (CoU)
+
+    
+
+## Question of Interest (QoI)
+
+
+## Import and export of datasets
+
+
+## QOI of the validation
+
+
+## Other metadata of the virtual cohort
+
+ 	(including description of the datasets used. The metadata are attached to the virtual cohort,  
+ 	which is stored in the VRE. Data and metadata are imported into the R-statistical
+ 	environment)
+ 	
+# Import datasets
+```{r}
+shapeFeatures_real <- read_csv("shapeFeatures_real.csv")
+shapeFeatures_synthetic <- read_csv("shapeFeatures_synthetic.csv")
+```
+
+#	Statistical methods
+
+##	Univariate comparison
+
++   We generate a summary table with descriptive statistics for each variable. 
+    This table contains the mean, standard deviation, the minimum the maximum,
+    and the sample size for each dataset. 
+
++   We perform graphical comparisons between the real data and the virtual 
+    cohort by using Boxplots for each variable.
+
+
+## Bivariate comparison
+
++   A matrix with the correlations for each variable is generated for each dataset.
+
++   Visualization of the correlations between each variable is presented with 
+    a graphical correlation matrix. This figure displays the correlations 
+    by different colors intensities.
+    
++   Further visualization is performed by displaying a matrix plot, where the 
+    diagonal of the matrix displays empirical density functions, and the 
+    upper and lower diagonals scatter-plots for each pairs of variables.
+    
+
+
+##  Multivariate comparison with qq-plots
+
+The aim is to compare the empirical probability distributions of two data sets: 
+a real clinical data $y_{r}$ and a virtual cohort data $y_{v}$ produced by an algorithm. 
+We assume that the dimension of $y_{r}$ is $p \times n_r$ and the dimension
+of the virtual cohort data $y_{v}$ is $p \times n_v$.
+
+The mean and the variance covariance matrix of $y_{r}$ are:
+\[
+E(y_{r})= \mu_r \quad \text{with dimension} \quad (p \times 1),
+\]
+and 
+\[
+Var(y_{r}) = \Sigma_{r} \quad \text{with dimension} \quad (p \times p).
+\]
+Similarly, the the mean and the variance covariance matrix of $y_{v}$
+are:
+\[
+E(y_{v})= \mu_v \quad \text{with dimension} \quad (p \times 1),
+\]
+and 
+\[
+Var(y_{v}) = \Sigma_{v} \quad \text{with dimension} \quad (p \times p).
+\]
+
+In order to reduce the dimensionality of the multivariate comparison
+we compare the standardized observation calculated with the following
+quadratic forms:
+\[
+q_{r} = y_{r}^{T} \times \Sigma^{-1} \times y_{r}, 
+\]
+and
+\[
+q_{v} = y_{v}^{T} \times \Sigma^{-1} \times y_{v}. 
+\]
+The quantities $q_{r}$ and $q_{v}$ have dimension 1. Moreover, if 
+the multivariate normality of $y_{r}$ and $y_{v}$ hold then we
+have that 
+\[
+q_{r} \sim \chi^2_p \quad \text{and} \quad q_{v} \sim \chi^2.
+\]
+
+To compare the multivariate distributions of $y_{r}$ and $y_{v}$,
+we compare the empirical quantiles of the univariate 
+distributions of $q_{r}$ and $q_{v}$. This comparison is performed
+with a qq-plot.
+
+
+##  Variability assessment with bootstrap techniques
+
+
+The aim is to compare the probability distributions of two data sets: a real clinical data $y^{r}$ and a 
+virtual cohort data $y^{v}$ produced by an algorithm. 
+
+We propose to generate bootstrap samples, by resampling the virtual data $y^{v}$ and compare
+the distributions generated with the fixed $y^{r}$. The bootstrap comparison has to be 
+performed by fixing the data sets: $n_r = n_v$.
+
+We assume that each observation is univariate and independently distributed
+and we denote these two data sets as:
+\[
+ y_{1}^{r} \ldots, y_{n_r}^{r} \sim P^r
+\]
+and
+\[
+ y_{1}^{v} \ldots, y_{n_v}^{v} \sim P^v.
+\]
+
+In addition, we assume that we do not have directly access to the algorithm that produced $y_r$,
+but only a realization of the virtual cohort. Moreover, the real data $y^{r}$ is a **validation data**
+that has not been used to build the model $P^v$ that simulates $y_r$.
+
+The central difficult is that we are comparing a **directly measured** data $y^{r}$ from patients,
+with an **indirect generated** data $y^{v}$ that aims to mimic $y^{r}$. The main difference between
+the two data sets is the **amount of information** that they contain. 
+
+This feature can be describe by the relationship between the sample sizes $n_r$
+and $n_v$.  For a sample size of real measurement $n_r$ the effective sample size of a virtual cohort is
+$n_v = \alpha \times n_r$, where $\alpha$ is an **uncertainty discount factor**
+between zero and one. Thus, if $\alpha = 0.10$ a virtual observation worth 0.1 of a real one. 
+
+Thus, the bootstrap samples are sub-samples with replacement of size $m = [\alpha \times n_r]$. 
+For example, $n_r = 100$ and we choose $\alpha = 0.70$, the sample size of the bootstrap 
+sample is $m = 70$.
+
+
+
+# Results
+
+## Univariate comparison
+
+### Summary Statistics
+
+```{r}
+knitr::kable(summary_real)
+
+knitr::kable(summary_virtual)
+
+boxplot_real
+
+boxplot_virtual
+```
+
+## Multivariate comparison
+
+(This section collects the output of the Shiny application.)
+
+## Variability assessment
+
+(This section collects the output of the Shiny application.)
+
+# Discussion
+
+ 	(free text by the user)
+
+# References
+
+Multivariate comparison using qq-plot: Applied Multivariate Statistical Analysis. Johnson R. A. and Wichern, D.W. Prentice-Hall International Editions. 1992, Third Edition, Chapter 4, pages 126-171.
+
+
+Bootstrap Analysis: An Introduction to the Bootstrap. Efron, B. and Tibshirani, R. Chapman & Hall. 1993, First Edition, Chapter 16, pages 220-236.
+
+
+
+
+
