@@ -154,12 +154,14 @@ From the imported data sets all, several or one specific variable are selected a
 •	Mean value, standard deviation, Max and Min
 •	Scatter plots of combinations of variables
 The results are presented as tables with variables as rows and virtual and real data metrics as columns. In addition, the results are shown as box plots.
+
 2.2 	Bivariate correlations between variables of real and synthetic data
 Here, separately for the real and synthetic dataset, bivariate correlations between the variables are calculated. The idea is to compare the correlations within the two cohorts. 
 
 •	Spearman correlation coefficients between all features (separately for real and virtual data)
 
-The results are graphically displayed as so-called heatmaps. Correlation heatmaps are a type of plot that visualize the strength of relationships between numerical variables. Correlation plots are used to understand which variables are related to each other and the strength of this relationship (6).
+The results are graphically displayed as so-called heatmaps. Correlation heatmaps are a type of plot that visualize the strength of relationships between numerical variables. Correlation plots are used to understand which variables are related to each other and the strength of this relationship.
+
 2.3	Multivariate comparison of variables characterising the real and synthetic data
 To evaluate the compatibility of the virtual cohort with the real data, a multivariate comparison between the n-dimensional distributions of the features of both cohorts can be performed in the R-statistical environment. The following test will be used:
 
