@@ -1,0 +1,130 @@
+# Updated code for Time to Event section
+library(broom)
+library(ggplot2)
+library(survival)
+library(plotly)
+library(shiny)
+library(dplyr)
+
+# UI
+ui <- fluidPage(
+  titlePanel("One and Two Group Assessment"),
+  
+  # Create a tabset that contains both the assessment and sample size calculation
+  tabsetPanel(
+    tabPanel("One and Two Group Assessment", 
+             sidebarLayout(
+               sidebarPanel(
+                 selectInput("trial_type", "Define the type of trial:", 
+                             choices = c("1-group design", "2-group (parallel) design")),
+                 fileInput("file1", "Choose CSV file for Group 1", accept = ".csv"),
+                 conditionalPanel(
+                   condition = "input.trial_type == '2-group (parallel) design'",
+                   fileInput("file2", "Choose CSV file for Group 2", accept = ".csv")
+                 ),
+                 selectInput("variableName", "Select Variable Name", 
+                             choices = c("Select a variable", "y.1", "y.2", "y.3")),
+                 selectInput("dataChoice", "Choose outcome variable Type", 
+                             choices = c("Select an outcome type", "Continuous", "Discrete", "Time to Event")),
+                 actionButton("btn", "Perform Analysis")
+               ),
+               mainPanel(
+                 tabsetPanel(
+                   tabPanel("Data", tableOutput("table")),
+                   tabPanel("Plot", plotlyOutput("plot")),
+                   tabPanel("Analysis", verbatimTextOutput("analysisOutput"))
+                 )
+               )
+             )
+    )
+  )
+)
+
+# Server
+server <- function(input, output) {
+  
+  uploadedData1 <- reactiveVal()
+  uploadedData2 <- reactiveVal()
+  
+  # Load CSV data
+  observe({
+    req(input$file1)
+    uploadedData1(read.csv(input$file1$datapath))
+  })
+  
+  observe({
+    req(input$file2)
+    uploadedData2(read.csv(input$file2$datapath))
+  })
+  
+  # Combine data if two-group design
+  combinedData <- reactive({
+    if (input$trial_type == "2-group (parallel) design") {
+      data1 <- uploadedData1()
+      data2 <- uploadedData2()
+      if (is.null(data1) || is.null(data2)) return(NULL)
+      return(rbind(data1, data2))
+    } else {
+      return(uploadedData1())
+    }
+  })
+  
+  # Display data table
+  output$table <- renderTable({
+    head(combinedData(), 10)
+  })
+  
+  # Analysis and Visualization
+  observeEvent(input$btn, {
+    data <- combinedData()
+    req(data)
+    
+    if (input$dataChoice == "Time to Event") {
+      
+      # Check if design is one-group or two-group and proceed with survival analysis
+      if (input$trial_type == "1-group design") {
+        
+        # One-group analysis with censoring indicator
+        output$analysisOutput <- renderText({
+          test <- survfit(Surv(data[[input$variableName]], data$c.3) ~ 1, data = data)
+          summary(test)
+        })
+        
+        output$plot <- renderPlotly({
+          m.surv <- survfit(Surv(get(input$variableName), c.3) ~ 1, data = data)
+          surv_data <- broom::tidy(m.surv)
+          
+          p <- ggplot(surv_data, aes(x = time, y = estimate)) + 
+            geom_step(color = "#00BFC4") +
+            labs(x = "Time", y = "Survival Probability") +
+            theme_minimal()
+          ggplotly(p)
+        })
+        
+      } else if (input$trial_type == "2-group (parallel) design") {
+        
+        # Two-group analysis with censoring indicator
+        output$analysisOutput <- renderText({
+          test <- survdiff(Surv(get(input$variableName), data$c.3) ~ device, data = data)
+          chisq_result <- round(test$chisq, 1)
+          p_value <- round(1 - pchisq(test$chisq, df = 1), 3)
+          paste("Chisq =", chisq_result, "on 1 degrees of freedom, p =", p_value)
+        })
+        
+        output$plot <- renderPlotly({
+          m.surv <- survfit(Surv(get(input$variableName), c.3) ~ device, data = data)
+          surv_data <- broom::tidy(m.surv)
+          
+          p <- ggplot(data = surv_data, aes(x = time, y = estimate, color = strata)) + 
+            geom_step() + 
+            labs(color = "Device", x = "Time", y = "Survival Probability") +
+            theme_minimal()
+          ggplotly(p)
+        })
+      }
+    }
+  })
+}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
