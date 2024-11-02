@@ -4,6 +4,7 @@ library(survival)
 library(plotly)
 library(shiny)
 library(dplyr)
+library(pander)
 
 # UI
 ui <- fluidPage(
